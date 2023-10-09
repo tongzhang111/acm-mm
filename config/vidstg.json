@@ -1,0 +1,6 @@
+{
+  "combine_datasets": ["vidstg"],
+  "combine_datasets_val": ["vidstg"],
+  "vidstg_vid_path" : "/data/zhangtong/tubedetr/tsvg/VidOR",
+  "vidstg_ann_path" : "/data/zhangtong/tubedetr/tsvg/VidSTG"
+}

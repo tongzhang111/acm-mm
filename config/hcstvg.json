@@ -1,0 +1,6 @@
+{
+  "combine_datasets": ["hcstvg"],
+  "combine_datasets_val": ["hcstvg"],
+  "hcstvg_vid_path" : "/root/autodl-tmp/tubedetr/tsvg",
+  "hcstvg_ann_path" : "/root/autodl-tmp/tubedetr/tsvg/anno"
+}
