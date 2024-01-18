@@ -13,7 +13,7 @@ Then create a conda environment and install the requirements with the following 
 ```
 conda create -n tubedetr_env python=3.8
 conda activate tubedetr_env
-pip install -r requirements.txt
+pip install -r requ.txt
 ```
 
 ## Data Downloading
