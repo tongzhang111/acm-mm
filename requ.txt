@@ -27,7 +27,6 @@ GitPython==3.1.31
 google-auth==2.20.0
 google-auth-oauthlib==1.0.0
 # Editable install with no version control (groundingdino==0.1.0)
--e /data/zhangtong/tubedetr/sam/GroundingDINO
 grpcio==1.56.0
 hostlist==1.4.8
 huggingface-hub==0.15.1
