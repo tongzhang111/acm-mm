@@ -143,10 +143,10 @@ class Transformer(nn.Module):
         self._reset_temporal_parameters()
 
         self.tokenizer = RobertaTokenizerFast.from_pretrained(
-            text_encoder_type, local_files_only=True
+            "/data/zhangtong/tubedetr/roberta_base"
         )
         self.text_encoder = RobertaModel.from_pretrained(
-            text_encoder_type, local_files_only=True
+            "/data/zhangtong/tubedetr/roberta_base"
         )
 
         if freeze_text_encoder:
@@ -631,15 +631,15 @@ class TransformerDecoder(nn.Module):
         self.box_pooler = box_pooler
         # hidden_dim = decoder_layer.d_model
         # hack implementation of iterative bbox refine
-        self.q = nn.Linear(256, 256)
-        self.k = nn.Linear(256, 256)
-        self.norm1 = nn.LayerNorm(256)
-        self.norm2 = nn.LayerNorm(256)
-        self.outputs = nn.Linear(256, 256)
-        self.Drop = nn.Dropout(0.2)
-        self.norm3 = nn.LayerNorm(256)
-        self.norm4 = nn.LayerNorm(256)
-        self.temp=None
+        # self.q = nn.Linear(256, 256)
+        # self.k = nn.Linear(256, 256)
+        # self.norm1 = nn.LayerNorm(256)
+        # self.norm2 = nn.LayerNorm(256)
+        # self.outputs = nn.Linear(256, 256)
+        # self.Drop = nn.Dropout(0.2)
+        # self.norm3 = nn.LayerNorm(256)
+        # self.norm4 = nn.LayerNorm(256)
+        # self.temp=None
         self.box_refine = False
         self.bbox_embed = None
         self.ref_point_head = None
@@ -810,67 +810,67 @@ class TransformerDecoder(nn.Module):
                     intermediate_weights.append(weights)
                     intermediate_cross_weights.append(cross_weights)
 
-            temp_prob_map = torch.zeros(outputs_temp.shape[0], outputs_temp.shape[1], outputs_temp.shape[1]).cuda()
-            inf = -1e32
+            # temp_prob_map = torch.zeros(outputs_temp.shape[0], outputs_temp.shape[1], outputs_temp.shape[1]).cuda()
+            # inf = -1e32
 
-            vis_memory___ = query_pos
-
-            out_sted = outputs_temp
-            out_sted = out_sted.detach()
-            for i_b in range(outputs_temp.shape[0]):
-                duration = outputs_temp.shape[1]
-                sted_prob = (torch.ones(outputs_temp.shape[1], outputs_temp.shape[1]) * inf).tril(0).cuda()
-                sted_prob[duration:, :] = inf
-                sted_prob[:, duration:] = inf
-                temp_prob_map[i_b, :, :] = sted_prob
-
-            temp_prob_map += F.log_softmax(out_sted[:, :, 0], dim=1).unsqueeze(2) + \
-                             F.log_softmax(out_sted[:, :, 1], dim=1).unsqueeze(1)
-
-            reference_frame = []
-            for i_b in range(outputs_temp.shape[0],):
-                prob_map = temp_prob_map[i_b]  # [T * T]
-                prob_seq = prob_map.flatten(0)
-                max_tstamp = prob_seq.max(dim=0)[1].item()
-                start_idx = max_tstamp // outputs_temp.shape[1]
-                end_idx = max_tstamp % outputs_temp.shape[1]
-                pred_sted = [start_idx, end_idx]
-                reference_time = (pred_sted[0] + pred_sted[1]) / 2
-                reference_time = torch.as_tensor(reference_time, dtype=torch.int)
-                reference = vis_memory___[i_b, reference_time].unsqueeze(0)
-                reference_frame.append(reference)
-
-                #pred_steds.append(reference_time)
-
-
-
-
-            #reference_time = reference_time.unsqueeze(1)
-            reference_frame = torch.cat(reference_frame,dim=0)
-            reference_frame = reference_frame.unsqueeze(1)
-            # reference_frame = torch.mean(reference_frame, dim=1).unsqueeze(1)
-            #reference_frame = reference_frame.repeat(outputs_temp.shape[1], 1, 1)
-            #reference_frame = reference_frame
-            vis_memory__ = vis_memory___
-            vis_memory_ = self.q(vis_memory__)
-            reference_frame = self.k(reference_frame)
-            vis_memory_ = self.norm1(vis_memory_)
-            reference_frame = self.norm2(reference_frame)
-            # vis_memory_ = vis_memory_.transpose(0,1)
-            refe_en = torch.matmul(reference_frame, vis_memory_.transpose(1, 2))
-            #refe_en = refe_en.sigmoid()
-            refe_en = torch.softmax(refe_en,dim=-1)
-            refe_en = refe_en.transpose(1, 2)
-            # vis_memory__ = vis_memory__.transpose(0,1)
-            vis_memory = torch.multiply(refe_en, vis_memory__)
-            # vis_memory = torch.bmm(refe_en,vis_memory__)
-            resid_memory = self.Drop(vis_memory) + vis_memory__
-
-            resid_memory = self.norm3(resid_memory)
-            vis_memory = self.outputs(resid_memory)
-            vis_memory = vis_memory + resid_memory
-            vis_memory = self.norm4(vis_memory)
-            query_pos = vis_memory
+            # vis_memory___ = query_pos
+            #
+            # out_sted = outputs_temp
+            # out_sted = out_sted.detach()
+            # for i_b in range(outputs_temp.shape[0]):
+            #     duration = outputs_temp.shape[1]
+            #     sted_prob = (torch.ones(outputs_temp.shape[1], outputs_temp.shape[1]) * inf).tril(0).cuda()
+            #     sted_prob[duration:, :] = inf
+            #     sted_prob[:, duration:] = inf
+            #     temp_prob_map[i_b, :, :] = sted_prob
+            #
+            # temp_prob_map += F.log_softmax(out_sted[:, :, 0], dim=1).unsqueeze(2) + \
+            #                  F.log_softmax(out_sted[:, :, 1], dim=1).unsqueeze(1)
+            #
+            # reference_frame = []
+            # for i_b in range(outputs_temp.shape[0],):
+            #     prob_map = temp_prob_map[i_b]  # [T * T]
+            #     prob_seq = prob_map.flatten(0)
+            #     max_tstamp = prob_seq.max(dim=0)[1].item()
+            #     start_idx = max_tstamp // outputs_temp.shape[1]
+            #     end_idx = max_tstamp % outputs_temp.shape[1]
+            #     pred_sted = [start_idx, end_idx]
+            #     reference_time = (pred_sted[0] + pred_sted[1]) / 2
+            #     reference_time = torch.as_tensor(reference_time, dtype=torch.int)
+            #     reference = vis_memory___[i_b, reference_time].unsqueeze(0)
+            #     reference_frame.append(reference)
+            #
+            #     #pred_steds.append(reference_time)
+            #
+            #
+            #
+            #
+            # #reference_time = reference_time.unsqueeze(1)
+            # reference_frame = torch.cat(reference_frame,dim=0)
+            # reference_frame = reference_frame.unsqueeze(1)
+            # # reference_frame = torch.mean(reference_frame, dim=1).unsqueeze(1)
+            # #reference_frame = reference_frame.repeat(outputs_temp.shape[1], 1, 1)
+            # #reference_frame = reference_frame
+            # vis_memory__ = vis_memory___
+            # vis_memory_ = self.q(vis_memory__)
+            # reference_frame = self.k(reference_frame)
+            # vis_memory_ = self.norm1(vis_memory_)
+            # reference_frame = self.norm2(reference_frame)
+            # # vis_memory_ = vis_memory_.transpose(0,1)
+            # refe_en = torch.matmul(reference_frame, vis_memory_.transpose(1, 2))
+            # #refe_en = refe_en.sigmoid()
+            # refe_en = torch.softmax(refe_en,dim=-1)
+            # refe_en = refe_en.transpose(1, 2)
+            # # vis_memory__ = vis_memory__.transpose(0,1)
+            # vis_memory = torch.multiply(refe_en, vis_memory__)
+            # # vis_memory = torch.bmm(refe_en,vis_memory__)
+            # resid_memory = self.Drop(vis_memory) + vis_memory__
+            #
+            # resid_memory = self.norm3(resid_memory)
+            # vis_memory = self.outputs(resid_memory)
+            # vis_memory = vis_memory + resid_memory
+            # vis_memory = self.norm4(vis_memory)
+            # query_pos = vis_memory
 
         _, B, _ = memory[:,keep,:].shape
         box_memory = memory[:,keep,:]
