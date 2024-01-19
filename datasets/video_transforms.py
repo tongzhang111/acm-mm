@@ -337,67 +337,67 @@ def make_video_transforms(image_set, cautious, resolution=224):
     )
     if resolution == 128:
         scales = [96, 128]
-        max_size = 213
+        max_size = 720
         resizes = [80, 100, 120]
         crop = 64
         test_size = [128]
     elif resolution == 224:
         scales = [128, 160, 192, 224]
-        max_size = 427
+        max_size = 720
         resizes = [100, 150, 200]
         crop = 96
-        test_size = [373]
+        test_size = [224]
     elif resolution == 256:
         scales = [160, 192, 224, 256]
-        max_size = 427
+        max_size = 720
         resizes = [140, 180, 220]
         crop = 128
         test_size = [256]
     elif resolution == 288:
-        scales = [160, 192, 224, 256, 288]
-        max_size = 480
+        scales = [192, 224, 256, 288]
+        max_size = 720
         resizes = [150, 200, 250]
         crop = 128
         test_size = [288]
     elif resolution == 320:
-        scales = [192, 224, 256, 288, 320]
-        max_size = 533
+        scales = [224, 256, 288, 320]
+        max_size = 720
         resizes = [200, 240, 280]
         crop = 160
         test_size = [320]
     elif resolution == 352:
-        scales = [224, 256, 288, 320, 352]
-        max_size = 587
+        scales = [256, 288, 320, 352]
+        max_size = 720
         resizes = [200, 250, 300]
         crop = 192
         test_size = [352]
     elif resolution == 384:
-        scales = [224, 256, 288, 320, 352, 384]
-        max_size = 640
+        scales = [288, 320, 352, 384]
+        max_size = 720
         resizes = [200, 250, 300]
         crop = 192
         test_size = [384]
     elif resolution == 416:
-        scales = [256, 288, 320, 352, 384, 416]
-        max_size = 693
+        scales = [320, 352, 384, 416]
+        max_size = 720
         resizes = [240, 300, 360]
         crop = 224
         test_size = [416]
     elif resolution == 448:
-        scales = [256, 288, 320, 352, 384, 416, 448]
-        max_size = 746
+        scales = [352, 384, 416, 448]
+        max_size = 720
         resizes = [240, 300, 360]
         crop = 224
         test_size = [448]
     elif resolution == 480:
-        scales = [288, 320, 352, 384, 416, 448, 480]
-        max_size = 800
+        scales = [384, 416, 448, 480]
+        max_size = 720
         resizes = [240, 300, 360]
         crop = 240
         test_size = [480]
     elif resolution == 800:
-        scales = [480, 512, 544, 576, 608, 640, 672, 704, 736, 768, 800]
-        max_size = 1333
+        scales = [704, 736, 768, 800]
+        max_size = 720
         resizes = [400, 500, 600]
         crop = 384
         test_size = [800]
@@ -413,8 +413,8 @@ def make_video_transforms(image_set, cautious, resolution=224):
                     RandomResize(scales, max_size=max_size),
                     Compose(
                         [
-                            RandomResize(resizes),
-                            RandomSizeCrop(crop, max_size, respect_boxes=cautious),
+                            RandomResize([400, 500, 600]),
+                            RandomSizeCrop(384,600, respect_boxes=cautious),
                             RandomResize(scales, max_size=max_size),
                         ]
                     ),
